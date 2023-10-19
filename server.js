@@ -18,6 +18,32 @@ app.get("/api/notes", (req, res) =>
     fs.readFile("./db/db.json", "utf8").then((data) => res.json(JSON.parse(data)))
 );
 
+app.post("/api/notes", (req, res) => {
+    const { title, text } = req.body;
+
+    const newNote = {
+        title,
+        text
+    }
+
+    fs.readFile("./db/db.json", "utf8").then((data) => {
+        const notes = JSON.parse(data);
+        notes.push(newNote);
+
+        fs.writeFile("./db/db.json", JSON.stringify(notes, null, 4));
+    });
+
+    // const response = {
+    //     status: "success",
+    //     body: newNote
+    // }
+
+    // res.json(response);
+
+    res.end();
+}
+);
+
 app.get("*", (req, res) =>
     res.sendFile(path.join(__dirname, '/public/index.html'))
 );
