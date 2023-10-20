@@ -23,7 +23,28 @@ notes.post("/", (req, res) => {
     });
 
     res.end();
-}
-);
+});
+
+notes.delete("/:id", (req, res) => {
+    if (req.params.id) {
+        const idToBeDeleted = req.params.id;
+        fs.readFile("./db/db.json", "utf8").then((data) => {
+            const notes = JSON.parse(data);
+            const filteredData = notes.filter(checkId);
+
+            function checkId(note) {
+                if (idToBeDeleted === note.id) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            fs.writeFile("./db/db.json", JSON.stringify(filteredData, null, 4));
+        });
+    }
+
+    res.end();
+});
 
 module.exports = notes;

@@ -1,14 +1,5 @@
 [
     {
-        "title":"Test Title",
-        "text":"Test text"
-    },
-    {
-        "title": "abc",
-        "text": "a",
-        "id": "1c4d212a-9ce9-4a9f-ab95-7a9c8d29eaf4"
-    },
-    {
         "title": "Note 1",
         "text": "note note",
         "id": "46b47222-913b-4ae5-99f7-1144bd0ba5fe"
