@@ -1,10 +1,10 @@
 const notes = require("express").Router();
-const fs = require("fs/promises");
 const { v4: uuidv4 } = require('uuid');
+const { readNotes, readAndWriteNote, deleteNote } = require("../helpers/fsUtils.js");
 
 // Returns all saved notes
 notes.get("/", (req, res) =>
-    fs.readFile("./db/db.json", "utf8").then((data) => res.json(JSON.parse(data)))
+    readNotes("./db/db.json").then((notes) => res.json(notes))
 );
 
 // Receives user input and save as new note
@@ -17,13 +17,10 @@ notes.post("/", (req, res) => {
         // Generates unique id using uuid package
         id: uuidv4(),
     }
+    
     // Updates db.json file
-    fs.readFile("./db/db.json", "utf8").then((data) => {
-        const notes = JSON.parse(data);
-        notes.push(newNote);
+    readAndWriteNote("./db/db.json", newNote);
 
-        fs.writeFile("./db/db.json", JSON.stringify(notes, null, 4));
-    });
     // Send an empty response to end the request
     res.end();
 });
@@ -31,18 +28,7 @@ notes.post("/", (req, res) => {
 // Handles deleting a note
 notes.delete("/:id", (req, res) => {
     if (req.params.id) {
-        const idToBeDeleted = req.params.id;
-        fs.readFile("./db/db.json", "utf8").then((data) => {
-            const notes = JSON.parse(data);
-            // Remove note with given id
-            const filteredData = notes.filter(checkId);
-
-            const checkId = (note) => {
-                return idToBeDeleted === note.id ? false : true;
-            };
-
-            fs.writeFile("./db/db.json", JSON.stringify(filteredData, null, 4));
-        });
+        deleteNote("./db/db.json", req.params.id);
     }
     // Send an empty response to end the request
     res.end();
